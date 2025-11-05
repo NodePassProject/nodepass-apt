@@ -21,9 +21,9 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/NodePassProject/conn"
-	"github.com/NodePassProject/logs"
-	"github.com/NodePassProject/pool"
+	"github.com/yosebyte/nodepass/pkg/conn"
+	"github.com/yosebyte/nodepass/pkg/logs"
+	"github.com/yosebyte/nodepass/pkg/pool"
 )
 
 // Common 包含所有模式共享的核心功能

@@ -26,7 +26,7 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/NodePassProject/logs"
+	"github.com/yosebyte/nodepass/pkg/logs"
 )
 
 // 常量定义

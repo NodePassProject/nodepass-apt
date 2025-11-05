@@ -16,9 +16,9 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/NodePassProject/conn"
-	"github.com/NodePassProject/logs"
-	"github.com/NodePassProject/pool"
+	"github.com/yosebyte/nodepass/pkg/conn"
+	"github.com/yosebyte/nodepass/pkg/logs"
+	"github.com/yosebyte/nodepass/pkg/pool"
 )
 
 // Server 实现服务端模式功能

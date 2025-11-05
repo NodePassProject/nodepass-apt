@@ -16,9 +16,9 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/NodePassProject/conn"
-	"github.com/NodePassProject/logs"
-	"github.com/NodePassProject/pool"
+	"github.com/yosebyte/nodepass/pkg/conn"
+	"github.com/yosebyte/nodepass/pkg/logs"
+	"github.com/yosebyte/nodepass/pkg/pool"
 )
 
 // Client 实现客户端模式功能
