@@ -8,9 +8,9 @@ import (
 	"runtime"
 	"time"
 
-	"github.com/yosebyte/nodepass/internal"
-	"github.com/yosebyte/nodepass/pkg/cert"
-	"github.com/yosebyte/nodepass/pkg/logs"
+	"github.com/NodePassProject/nodepass-apt/internal"
+	"github.com/NodePassProject/nodepass-apt/pkg/cert"
+	"github.com/NodePassProject/nodepass-apt/pkg/logs"
 )
 
 // start 启动核心逻辑
