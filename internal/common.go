@@ -289,6 +289,14 @@ func (c *Common) getAddress(parsedURL *url.URL) error {
 	c.targetUDPAddrs = tempUDPAddrs
 	c.targetIdx = 0
 
+	// 无限循环检查
+	tunnelPort := c.tunnelTCPAddr.Port
+	for _, targetAddr := range c.targetTCPAddrs {
+		if targetAddr.Port == tunnelPort && (targetAddr.IP.IsLoopback() || c.tunnelTCPAddr.IP.IsUnspecified()) {
+			return fmt.Errorf("getAddress: tunnel port %d conflicts with target address %s", tunnelPort, targetAddr.String())
+		}
+	}
+
 	return nil
 }
 
