@@ -31,6 +31,7 @@ type Client struct {
 func NewClient(parsedURL *url.URL, logger *logs.Logger) (*Client, error) {
 	client := &Client{
 		Common: Common{
+			parsedURL:  parsedURL,
 			logger:     logger,
 			signalChan: make(chan string, semaphoreLimit),
 			tcpBufferPool: &sync.Pool{
@@ -51,7 +52,7 @@ func NewClient(parsedURL *url.URL, logger *logs.Logger) (*Client, error) {
 		},
 		tunnelName: parsedURL.Hostname(),
 	}
-	if err := client.initConfig(parsedURL); err != nil {
+	if err := client.initConfig(); err != nil {
 		return nil, fmt.Errorf("newClient: initConfig failed: %w", err)
 	}
 	client.initRateLimiter()
@@ -61,9 +62,10 @@ func NewClient(parsedURL *url.URL, logger *logs.Logger) (*Client, error) {
 // Run 管理客户端生命周期
 func (c *Client) Run() {
 	logInfo := func(prefix string) {
-		c.logger.Info("%v: client://%v@%v/%v?min=%v&mode=%v&read=%v&rate=%v&slot=%v&proxy=%v&notcp=%v&noudp=%v",
-			prefix, c.tunnelKey, c.tunnelTCPAddr, c.getTargetAddrsString(),
-			c.minPoolCapacity, c.runMode, c.readTimeout, c.rateLimit/125000, c.slotLimit, c.proxyProtocol, c.disableTCP, c.disableUDP)
+		c.logger.Info("%v: client://%v@%v/%v?dns=%v&min=%v&mode=%v&dial=%v&read=%v&rate=%v&slot=%v&proxy=%v&notcp=%v&noudp=%v",
+			prefix, c.tunnelKey, c.tunnelTCPAddr, c.getTargetAddrsString(), c.dnsCacheTTL, c.minPoolCapacity,
+			c.runMode, c.dialerIP, c.readTimeout, c.rateLimit/125000, c.slotLimit,
+			c.proxyProtocol, c.disableTCP, c.disableUDP)
 	}
 	logInfo("Client started")
 
@@ -143,7 +145,7 @@ func (c *Client) commonStart() error {
 	}
 
 	// 初始化连接池
-	c.tunnelPool = pool.NewClientPool(
+	tcpPool := pool.NewClientPool(
 		c.minPoolCapacity,
 		c.maxPoolCapacity,
 		minPoolInterval,
@@ -152,9 +154,14 @@ func (c *Client) commonStart() error {
 		c.tlsCode,
 		c.tunnelName,
 		func() (net.Conn, error) {
-			return net.DialTimeout("tcp", c.tunnelTCPAddr.String(), tcpDialTimeout)
+			tcpAddr, err := c.getTunnelTCPAddr()
+			if err != nil {
+				return nil, err
+			}
+			return net.DialTimeout("tcp", tcpAddr.String(), tcpDialTimeout)
 		})
-	go c.tunnelPool.ClientManager()
+	go tcpPool.ClientManager()
+	c.tunnelPool = tcpPool
 
 	// 判断数据流向
 	if c.dataFlow == "+" {
@@ -174,7 +181,11 @@ func (c *Client) commonStart() error {
 // tunnelHandshake 与隧道服务端进行握手
 func (c *Client) tunnelHandshake() error {
 	// 建立隧道TCP连接
-	tunnelTCPConn, err := net.DialTimeout("tcp", c.tunnelTCPAddr.String(), tcpDialTimeout)
+	tunnelTCPAddr, err := c.getTunnelTCPAddr()
+	if err != nil {
+		return fmt.Errorf("tunnelHandshake: getTunnelTCPAddr failed: %w", err)
+	}
+	tunnelTCPConn, err := net.DialTimeout("tcp", tunnelTCPAddr.String(), tcpDialTimeout)
 	if err != nil {
 		return fmt.Errorf("tunnelHandshake: dialTimeout failed: %w", err)
 	}
