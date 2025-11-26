@@ -1,67 +1,45 @@
-<div align="center">
-  <img src="https://cdn.yobc.de/assets/np-gopher.png" width="300">
-
-[![Mentioned in Awesome Go](https://awesome.re/mentioned-badge.svg)](https://github.com/avelino/awesome-go#networking)
-[![GitHub release](https://img.shields.io/github/v/release/yosebyte/nodepass)](https://github.com/yosebyte/nodepass/releases)
-[![GitHub downloads](https://img.shields.io/github/downloads/yosebyte/nodepass/total.svg)](https://github.com/yosebyte/nodepass/releases)
-[![Go Report Card](https://goreportcard.com/badge/github.com/yosebyte/nodepass)](https://goreportcard.com/report/github.com/yosebyte/nodepass)
-[![License](https://img.shields.io/badge/License-BSD_3--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
-[![Go Reference](https://pkg.go.dev/badge/github.com/yosebyte/nodepass.svg)](https://pkg.go.dev/github.com/yosebyte/nodepass)
-[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/yosebyte/nodepass)
-![GitHub last commit](https://img.shields.io/github/last-commit/yosebyte/nodepass)
-
-  <a href="https://apps.apple.com/us/app/nodepass/id6747930492"><img src="https://cdn.yobc.de/assets/appstore.png" width="120"></a>
-
-English | [简体中文](README_zh.md)
-</div>
+# NodePass Classic
 
 **NodePass** is an open-source, lightweight, enterprise-grade TCP/UDP network tunneling solution featuring an all-in-one architecture with separation of control and data channels, along with flexible and high-performance instance control. It supports zero-configuration deployment, intelligent connection pooling, tiered TLS encryption, and seamless protocol conversion. Designed for DevOps professionals and system administrators to effortlessly handle complex network scenarios.
 
-## 💎 Key Features
+## Key Features
 
-- **🌐 Universal Functionality**
+- **Universal Functionality**
   - Basic TCP/UDP tunneling and protocol conversion across diverse networks.
   - Compatible with port mapping, NAT traversal, and traffic relay.
   - Cross-platform, multi-architecture, single binary or container.
 
-- **🚀 Connection Pool**
+- **Connection Pool**
   - Pre-established connections for zero-latency switching and forwarding.
   - Eliminates handshake delays, boosts performance.
   - Auto-scaling with real-time capacity adjustment.
 
-- **🧬 Innovative Architecture**
+- **Innovative Architecture**
   - Integrated S/C/M architecture, flexible mode switching.
   - Full decoupling of control/data channels.
   - API-instance management, multi-instance collaboration.
 
-- **🔐 Multi-level Security**
+- **Multi-level Security**
   - Three TLS modes: plaintext, self-signed, strict validation.
   - Covers development to enterprise security needs.
   - Hot-reload certificates with zero downtime.
 
-- **⚙️ Minimal Configuration**
+- **Minimal Configuration**
   - No config files required, ready to use via CLI.
   - Optimized for CI/CD and containers.
   - Advanced parameters like timeouts and rate limits.
 
-- **📈 Performance**
+- **Performance**
   - Intelligent scheduling, auto-tuning, ultra-low resource usage.
   - Stable under high concurrency and heavy load.
   - Load balancing, health checks, self-healing and more.
 
-- **💡 Visualization**
+- **Visualization**
   - Rich cross-platform visual frontends.
   - One-click deployment scripts, easy management.
   - Real-time monitoring, API-instance management, traffic stats.
 
-## 📋 Quick Start
-
-### 📥 Installation
-
-- **Pre-built Binaries**: Download from [releases page](https://github.com/yosebyte/nodepass/releases).
-- **Container Image**: `docker pull ghcr.io/yosebyte/nodepass:latest`
-
-### 🚀 Basic Usage
+## Quick Start
 
 **Server Mode**
 ```bash
@@ -78,71 +56,45 @@ nodepass "client://server:10101/127.0.0.1:8080?min=128"
 nodepass "master://:10101/api?log=debug&tls=1"
 ```
 
-## 📚 Documentation
+## URL Query Parameters
 
-Explore the complete documentation to learn more about NodePass:
+| Parameter | Description              | Default | server | client | master |
+|-----------|--------------------------|---------|:------:|:------:|:------:|
+| `log`     | Log level                | `info`  |   O    |   O    |   O    |
+| `tls`     | TLS encryption mode      | `0`     |   O    |   X    |   O    |
+| `crt`     | Custom certificate path  | N/A     |   O    |   X    |   O    |
+| `key`     | Custom key path          | N/A     |   O    |   X    |   O    |
+| `dns`     | DNS cache TTL            | `5m`    |   O    |   O    |   X    |
+| `min`     | Minimum pool capacity    | `64`    |   X    |   O    |   X    |
+| `max`     | Maximum pool capacity    | `1024`  |   O    |   X    |   X    |
+| `mode`    | Run mode control         | `0`     |   O    |   O    |   X    |
+| `dial`    | Source IP for outbound   | `auto`  |   O    |   O    |   X    |
+| `read`    | Data read timeout        | `0`     |   O    |   O    |   X    |
+| `rate`    | Bandwidth rate limit     | `0`     |   O    |   O    |   X    |
+| `slot`    | Maximum connection limit | `65536` |   O    |   O    |   X    |
+| `proxy`   | PROXY protocol support   | `0`     |   O    |   O    |   X    |
+| `notcp`   | TCP support control      | `0`     |   O    |   O    |   X    |
+| `noudp`   | UDP support control      | `0`     |   O    |   O    |   X    |
 
-- [Installation Guide](/docs/en/installation.md)
-- [Usage Instructions](/docs/en/usage.md)
-- [Configuration Options](/docs/en/configuration.md)
-- [API Reference](/docs/en/api.md)
-- [Examples](/docs/en/examples.md)
-- [How It Works](/docs/en/how-it-works.md)
-- [Troubleshooting](/docs/en/troubleshooting.md)
+## Environment Variables
 
-## 🌱 Ecosystem
+| Variable               | Description                                   | Default |
+|------------------------|-----------------------------------------------|---------|
+| `NP_SEMAPHORE_LIMIT`   | Signal channel buffer size                    | 65536   |
+| `NP_TCP_DATA_BUF_SIZE` | Buffer size for TCP data transfer             | 16384   |
+| `NP_UDP_DATA_BUF_SIZE` | Buffer size for UDP packets                   | 16384   |
+| `NP_HANDSHAKE_TIMEOUT` | Timeout for handshake operations              | 5s      |
+| `NP_UDP_READ_TIMEOUT`  | Timeout for UDP read operations               | 30s     |
+| `NP_TCP_DIAL_TIMEOUT`  | Timeout for establishing TCP connections      | 5s      |
+| `NP_UDP_DIAL_TIMEOUT`  | Timeout for establishing UDP connections      | 5s      |
+| `NP_POOL_GET_TIMEOUT`  | Timeout for getting connections from pool     | 5s      |
+| `NP_MIN_POOL_INTERVAL` | Minimum interval between connection creations | 100ms   |
+| `NP_MAX_POOL_INTERVAL` | Maximum interval between connection creations | 1s      |
+| `NP_REPORT_INTERVAL`   | Interval for health check reports             | 5s      |
+| `NP_SERVICE_COOLDOWN`  | Cooldown period before restart attempts       | 3s      |
+| `NP_SHUTDOWN_TIMEOUT`  | Timeout for graceful shutdown                 | 5s      |
+| `NP_RELOAD_INTERVAL`   | Interval for cert reload/state backup         | 1h      |
 
-The [NodePassProject](https://github.com/NodePassProject) organization develops various frontend applications and auxiliary tools to enhance the NodePass experience:
-
-- **[NodePassDash](https://github.com/NodePassProject/NodePassDash)**: A modern NodePass management interface that provides master management, instance management, traffic statistics, history records, and more.
-
-- **[NodePanel](https://github.com/NodePassProject/NodePanel)**: A lightweight frontend panel that provides visual tunnel management, deployable on Vercel or Cloudflare Pages.
-
-- **[npsh](https://github.com/NodePassProject/npsh)**: A collection of one-click scripts that provide simple deployment for API or Dashboard with flexible configuration and management.
-
-- **[NodePass-ApplePlatforms](https://github.com/NodePassProject/NodePass-ApplePlatforms)**: A service-oriented iOS/macOS application that offers a native experience for Apple users.
-
-- **[nodepass-core](https://github.com/NodePassProject/nodepass-core)**: Development branch, featuring previews of new functionalities and performance optimizations, suitable for advanced users and developers.
-
-## 💬 Discussion
-
-- Follow our [Telegram Channel](https://t.me/NodePassChannel) for updates and community support.
-
-- Join our [Discord](https://discord.gg/2cnXcnDMGc) and [Telegram Group](https://t.me/NodePassGroup) to share experiences and ideas.
-
-## 📄 License
+## License
 
 Project **NodePass** is licensed under the [BSD 3-Clause License](LICENSE).
-
-## ⚖️ Disclaimer
-
-This project is provided "as is" without any warranties. Users assume all risks and must comply with local laws for legal use only. Developers are not liable for any direct, indirect, incidental, or consequential damages. Secondary development requires commitment to legal use and self-responsibility for legal compliance. Developers reserve the right to modify software features and this disclaimer at any time. Final interpretation rights belong to developers.
-
-## 🔗 NFT Support
-
-Support **NodePass** in a unique way by checking out our NFT collection on [OpenSea](https://opensea.io/collection/nodepass).
-
-## 🤝 Sponsors
-
-<table>
-  <tr>
-    <td width="240" align="center">
-      <a href="https://whmcs.as211392.com"><img src="https://cdn.yobc.de/assets/dreamcloud.png"></a>
-    </td>
-    <td width="240" align="center">
-      <a href="https://t.me/xiao_bai_xue_zhang"><img src="https://cdn.yobc.de/assets/xuezhang.png"></a>
-    </td>
-  </tr>
-  <tr>
-    <td width="240" align="center">
-      <a href="https://sharon.io"><img src="https://cdn.yobc.de/assets/sharon.png"></a>
-    </td>
-    <td width="240" align="center">
-      <a href="https://vps.town"><img src="https://cdn.yobc.de/assets/vpstown.png"></a>
-    </td>
-  </tr>
-</table>
-
-## ⭐ Stargazers
-
-[![Stargazers over time](https://starchart.cc/yosebyte/nodepass.svg?variant=adaptive)](https://starchart.cc/yosebyte/nodepass)
