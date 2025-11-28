@@ -265,11 +265,13 @@ func (p *Pool) ClientManager() {
 			var wg sync.WaitGroup
 			results := make(chan int, need)
 			for range need {
-				wg.Go(func() {
+				wg.Add(1)
+				go func() {
+					defer wg.Done()
 					if p.createConnection() {
 						results <- 1
 					}
-				})
+				}()
 			}
 			wg.Wait()
 			close(results)
@@ -352,11 +354,13 @@ func (p *Pool) IncomingGet(timeout time.Duration) (string, net.Conn, error) {
 func (p *Pool) Flush() {
 	var wg sync.WaitGroup
 	p.conns.Range(func(key, value any) bool {
-		wg.Go(func() {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
 			if value != nil {
 				value.(net.Conn).Close()
 			}
-		})
+		}()
 		return true
 	})
 	wg.Wait()
