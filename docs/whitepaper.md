@@ -1,6 +1,6 @@
 # NodePass Technical Whitepaper
 
-**Version 1.10.3**  
+**Version 1.0**
 **Date: November 2025**
 
 ---
@@ -292,30 +292,30 @@ NodePass uses an internal signal protocol for control messages:
 NodePass supports three TLS modes:
 
 ```
-┌────────────────────────────────────────────────────────────────────────┐
-│                          TLS MODE SELECTION                            │
-├────────────────────────────────────────────────────────────────────────┤
-│                                                                        │
-│  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐         │
-│  │   MODE 0        │  │   MODE 1        │  │   MODE 2        │         │
-│  │   (tls=0)       │  │   (tls=1)       │  │   (tls=2)       │         │
-│  ├─────────────────┤  ├─────────────────┤  ├─────────────────┤         │
-│  │                 │  │                 │  │                 │         │
-│  │  ┌───────────┐  │  │  ┌───────────┐  │  │  ┌───────────┐  │         │
-│  │  │ Plaintext │  │  │  │ TLS 1.3   │  │  │  │ TLS 1.3   │  │         │
-│  │  │   TCP     │  │  │  │ Self-Sign │  │  │  │ Custom CA │  │         │
-│  │  └───────────┘  │  │  └───────────┘  │  │  └───────────┘  │         │
-│  │                 │  │                 │  │                 │         │
-│  │  • No encrypt   │  │  • ECDSA P-256  │  │  • File-based   │         │
-│  │  • Fast         │  │  • Auto-gen     │  │  • Hot-reload   │         │
-│  │  • Internal use │  │  • 1-year valid │  │  • Verify chain │         │
-│  │                 │  │  • In-memory    │  │  • Production   │         │
-│  └─────────────────┘  └─────────────────┘  └─────────────────┘         │
-│         ▲                    ▲                    ▲                    │
-│         │                    │                    │                    │
-│    Development          Testing/Dev          Production                │
-│                                                                        │
-└────────────────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────┐
+│                          TLS MODE SELECTION                     │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐  │
+│  │   MODE 0        │  │   MODE 1        │  │   MODE 2        │  │
+│  │   (tls=0)       │  │   (tls=1)       │  │   (tls=2)       │  │
+│  ├─────────────────┤  ├─────────────────┤  ├─────────────────┤  │
+│  │                 │  │                 │  │                 │  │
+│  │  ┌───────────┐  │  │  ┌───────────┐  │  │  ┌───────────┐  │  │
+│  │  │ Plaintext │  │  │  │ TLS 1.3   │  │  │  │ TLS 1.3   │  │  │
+│  │  │   TCP     │  │  │  │ Self-Sign │  │  │  │ Custom CA │  │  │
+│  │  └───────────┘  │  │  └───────────┘  │  │  └───────────┘  │  │
+│  │                 │  │                 │  │                 │  │
+│  │  • No encrypt   │  │  • ECDSA P-256  │  │  • File-based   │  │
+│  │  • Fast         │  │  • Auto-gen     │  │  • Hot-reload   │  │
+│  │  • Internal use │  │  • 1-year valid │  │  • Verify chain │  │
+│  │                 │  │  • In-memory    │  │  • Production   │  │
+│  └─────────────────┘  └─────────────────┘  └─────────────────┘  │
+│         ▲                    ▲                    ▲             │
+│         │                    │                    │             │
+│    Development          Testing/Dev          Production         │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
 
                     Certificate Hot-Reload Mechanism
                     ────────────────────────────────
@@ -326,10 +326,10 @@ NodePass supports three TLS modes:
 └──────────┘               └────┬─────┘               └────┬─────┘
                                 │ No                       │
                                 ▼                          ▼
-                           ┌──────────┐              ┌──────────┐
-                           │Use Cached│              │Update    │
-                           │   Cert   │              │  Cache   │
-                           └──────────┘              └──────────┘
+                           ┌──────────┐               ┌──────────┐
+                           │Use Cached│               │ Update   │
+                           │   Cert   │               │  Cache   │
+                           └──────────┘               └──────────┘
 ```
 
 ### 5.2 Authentication
@@ -757,8 +757,8 @@ retry: 3000
 │                           SAVE STATE FLOW                               │
 │  ┌───────────────┐    ┌───────────────┐    ┌───────────────┐            │
 │  │   Acquire     │    │   Collect     │    │    Encode     │            │
-│  │    Mutex      │───►│  Instances    │───►│   to GOB      │            │
-│  │  (stateMu)    │    │  (sync.Map)   │    │   Format      │            │
+│  │    Mutex      │───►│  Instances    │───►│    to GOB     │            │
+│  │  (stateMu)    │    │  (sync.Map)   │    │    Format     │            │
 │  └───────────────┘    └───────────────┘    └───────┬───────┘            │
 │                                                    │                    │
 │                                                    ▼                    │
@@ -1058,7 +1058,7 @@ nodepass/
 │   ├── logs/logs.go     # Logging system
 │   └── pool/pool.go     # Connection pool management
 └── docs/
-    └── NodePass_Technical_Whitepaper.md
+    └── whitepaper.md    # This whitepaper
 ```
 
 ## Appendix B: Signal Flow Diagram
@@ -1097,7 +1097,7 @@ nodepass/
 
 | Version | Date | Description |
 |---------|------|-------------|
-| 1.10.3 | November 2025 | Initial release |
+| 1.0 | November 2025 | Initial release |
 
 ---
 
